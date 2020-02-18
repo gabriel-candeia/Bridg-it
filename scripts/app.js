@@ -1,20 +1,24 @@
 function create_board(){
-    var board = document.getElementById("app-container");
-    var temp;
-    for(let i=0;i<9;i++){
-        temp = document.createElement("div");
-        temp.className = "row"
-        board.appendChild(temp);
-        for(let j=0;j<9;j++){
-            temp = document.createElement("div");
-            temp.className = "dot"
-            temp.id = i+","+j
-            temp.style.background = ((i%2===j%2) ? "transparent" : ((j%2) ? "red" : "black")); 
-            board.appendChild(temp);
+    var canvas = document.getElementById("canvas");
+    if(canvas.getContext){
+        var ctx = canvas.getContext("2d")
+        for(let i=0;i<9;i++){
+            for(let j=0;j<9;j++){
+                ctx.fillStyle = ((i%2===j%2) ? "white"  : ((j%2) ? "red" : "black"));
+                ctx.beginPath();
+                ctx.arc(40*j+240,40*i+40,10,0,2*Math.PI,false);
+                if(i%2!==j%2){
+                    if(j%2){
+                        red_dot.push({x : 40*j+240, y : 40*i+40})
+                    }
+                    else{
+                        black_dot.push({x : 40*j+240, y : 40*i+40})
+                    }
+                }
+                ctx.fill();
+            }    
         }
     }
 }
 
-function create_line(){
-    
-}
+var red_dot = [], black_dot = []; 
