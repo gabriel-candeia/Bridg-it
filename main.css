@@ -6,6 +6,7 @@ body{
     text-align: center;
     font-size: 27px;
     font-family: 'Roboto', sans-serif;
+    background: white;
 }
 
 h1{
@@ -20,12 +21,12 @@ h1{
 }
 
 #app-container{
-    width: 800px;
-    height: 400px;
+    width: 450px;
+    height: 450px;
     margin: auto;
-    border: 1px solid grey;
+    border: 5px double rgb(233, 116, 116);
     border-radius: 10px;
-    
+    background: rgb(243, 241, 241);
 }
 
 .row{
@@ -33,7 +34,7 @@ h1{
 }
 
 .dot{
-    display: inline-block;
+    display: table-cell;
     width: 20px;
     height: 20px;
     border-radius: 50%;
