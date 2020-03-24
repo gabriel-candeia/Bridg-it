@@ -1,9 +1,11 @@
 class Circle{
-    constructor(canvas,x,y,r,id,color){
+    constructor(canvas,x,y,r,id,color,i,j){
         this.x = x;
         this.y = y;
         this.r = r;
         this.id = id;
+        this.i = i;
+        this.j = j;
         this.color = color;
         this.canvas = canvas;
     }
