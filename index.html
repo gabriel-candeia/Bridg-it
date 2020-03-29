@@ -5,8 +5,29 @@
 </head>
 <body>
     <div class="container">
+        <div class="side-panel">
+            <h3>What is Bridg-it?</h3>
+            <p> Also known as Game of Gale or <a href="https://en.wikipedia.org/wiki/Shannon_switching_game"> Shannon switching game</a>, it is a game where two players attempt to construct a path from one side of the board to the opposite side.</p>
+            <h3>Obs:</h3>
+            <ul>
+                <li>If the black player does not react its your turn again.</li>
+                <li>You can unselect a dot by clicking on it again.</li>
+            </ul>
+        </div>
+
         <div id="app-container">
+            <div id="win-message"> <span id = "black-message"> Black player wins!</span></div>
             <canvas id="canvas" width="450px" height="450px"></canvas>
+        </div>
+
+        <div class="side-panel">
+            <h3>Rules: </h1>
+                <ul>
+                    <li>Black goes first.</li>
+                    <li>Each turn a player can connect two adjacent dots if there's no line separating them.</li>
+                    <li>Red wins if he can construct a path from the top to the bottom of the board.</li>
+                    <li>Black wins if he can construct a path connecting the left and right sides.</li>
+                </ul>
         </div>
         <script src="scripts/dsu.js"></script>
         <script src="scripts/circle.js"></script>

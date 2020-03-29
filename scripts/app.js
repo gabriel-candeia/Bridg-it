@@ -49,7 +49,7 @@ function intersect(circle, mouse){
     return ((circle) ? ((circle.x-mouse.x)**2+(circle.y-mouse.y)**2 < circle.r**2) : false);
 }
 
-function circleSelected(turn,mouse){
+function find_selected_circleed(turn,mouse){
     for(let i = 1*(turn.player=="black");i<9;i+=2){
         for(let j = (i+1)%2;j<9;j+=2){
             if(intersect(turn.dots[i][j],mouse)){
@@ -60,7 +60,7 @@ function circleSelected(turn,mouse){
     return undefined;
 }
 
-function isValidMove(turn,c1,c2){
+function is_move_valid(turn,c1,c2){
     if(c1 && c2 && c1.color==c2.color && c1.color==turn.player){
         return ((Math.abs(c1.i-c2.i)+Math.abs(c1.j-c2.j)==2) ? (turn.dots[(c1.i+c2.i)/2][(c1.j+c2.j)/2]==undefined) : false);
     }
@@ -70,7 +70,7 @@ function isValidMove(turn,c1,c2){
 function click_event(turn,e){
     var rect = document.getElementById("canvas").getBoundingClientRect();
     var mouse = {x: e.clientX-rect.left, y: e.clientY-rect.top};
-    var target = circleSelected(turn,mouse);
+    var target = find_selected_circleed(turn,mouse);
 
     if(!turn.last_clicked && target){
         turn.last_clicked = target;
@@ -83,7 +83,7 @@ function click_event(turn,e){
         turn.last_clicked = undefined;
     }
     
-    if(isValidMove(turn,turn.last_clicked,target)){
+    if(is_move_valid(turn,turn.last_clicked,target)){
         make_move(turn,{x: turn.last_clicked, y: target});
     }
 }
@@ -99,7 +99,7 @@ function make_move(turn, next_move){
     animate_line(next_move.x,next_move.y);
 
     if(turn.dsu[turn.player].find(0)==turn.dsu[turn.player].find(19)){
-        alert(turn.player+" player wins!");
+        black_Win_screen();
     }
 
     turn.player = ((turn.player=="red") ? "black" :"red");
@@ -112,19 +112,19 @@ function make_move(turn, next_move){
         else{
             last_move = {x: (turn.dots[(li+i)/2][j-1]) ? turn.dots[(li+i)/2][j-1] : undefined ,y: (turn.dots[(li+i)/2][j+1]) ? turn.dots[(li+i)/2][j+1] : undefined}
         }
-        bot_test(last_move);
+        bot_select_move(last_move);
     }
 }
 
-function bot_test(last_move){
-    var ni = ((last_move.x.id<4) ? 0 : (last_move.x.id>=16) ?  19 : last_move.x.id)
-    var nj = ((last_move.y.id<4) ? 0 : (last_move.y.id>=16) ?  19 : last_move.y.id)
-    var alg  = new Dsu(20); var t
-
-    if(ni==undefined||nj==undefined){
+function bot_select_move(last_move){
+    if(!last_move.x || !last_move.y){
         turn.player = "red"
         return;
     }
+
+    var ni = ((last_move.x.id<4) ? 0 : (last_move.x.id>=16) ?  19 : last_move.x.id)
+    var nj = ((last_move.y.id<4) ? 0 : (last_move.y.id>=16) ?  19 : last_move.y.id)
+    var alg  = new Dsu(20); var t
     
     //find out in which tree the edge is
     t = ((t1[ni].indexOf(nj)!=-1) ? t1 : (t2[ni].indexOf(nj)!=-1) ? t2 : undefined)
@@ -148,10 +148,10 @@ function bot_test(last_move){
     for(let i = 1;i<9;i+=2){
         for(let j = 0;j<9;j+=2){
             let k = turn.dots[i][j].id;
-            if(k%4!=3 && alg.find(k)!=alg.find(k+1) && isValidMove(turn,turn.dots[i][j],turn.dots[i+2][j])){
+            if(k%4!=3 && alg.find(k)!=alg.find(k+1) && is_move_valid(turn,turn.dots[i][j],turn.dots[i+2][j])){
                 possible_moves.push({x: turn.dots[i][j], y: turn.dots[i+2][j]});
             }
-            if(alg.find(k)!=alg.find(k+4) && isValidMove(turn,turn.dots[i][j],turn.dots[i][j+2])){
+            if(alg.find(k)!=alg.find(k+4) && is_move_valid(turn,turn.dots[i][j],turn.dots[i][j+2])){
                 possible_moves.push({x: turn.dots[i][j], y: turn.dots[i][j+2]});
             }
         }
@@ -167,19 +167,25 @@ function bot_test(last_move){
     t[next_move.y].push(next_move.x)
 }
 
-//(function (){
-    var turn = {player: "black",last_clicked: undefined, candidates: undefined, dsu: {black: new Dsu(20), red: new Dsu(20)}, dots: create_board()};
-    for(let i=0;i<4;i++){
-        turn.dsu.red.union(0,0+5*i);
-        turn.dsu.red.union(19,19-5*i);
-        turn.dsu.black.union(0,0+i);
-        turn.dsu.black.union(19,19-i)
-    }
-    
-    document.getElementById("canvas").addEventListener("click",(e)=>click_event(turn,e));
-//})()
 
-last_move = {x: turn.dots[1][0], y: turn.dots[7][8]}
-t1 = [[7], undefined, undefined, undefined, [5], [4, 6], [5, 10], [0, 11], [9], [8, 13], [6, 14], [7, 15], [19], [9, 19], [10, 19], [11, 19], undefined, undefined, undefined, [12,13,14,15]]
-t2 = [[4, 5, 6, 19], undefined, undefined, undefined, [0, 8], [0, 9], [0, 7], [6], [4, 12], [5, 10],[9, 11], [10], [8,13], [12,14],[13,15],[14],undefined, undefined, undefined, [0]]
-bot_test(last_move)
+var turn = {player: "black",last_clicked: undefined, candidates: undefined, dsu: {black: new Dsu(20), red: new Dsu(20)}, dots: create_board()};
+for(let i=0;i<4;i++){
+    turn.dsu.red.union(0,0+5*i);
+    turn.dsu.red.union(19,19-5*i);
+    turn.dsu.black.union(0,0+i);
+    turn.dsu.black.union(19,19-i)
+}
+
+document.getElementById("canvas").addEventListener("click",(e)=>click_event(turn,e));
+
+var last_move = {x: turn.dots[1][0], y: turn.dots[7][8]}
+var t1 = [[7], undefined, undefined, undefined, [5], [4, 6], [5, 10], [0, 11], [9], [8, 13], [6, 14], [7, 15], [19], [9, 19], [10, 19], [11, 19], undefined, undefined, undefined, [12,13,14,15]]
+var t2 = [[4, 5, 6, 19], undefined, undefined, undefined, [0, 8], [0, 9], [0, 7], [6], [4, 12], [5, 10],[9, 11], [10], [8,13], [12,14],[13,15],[14],undefined, undefined, undefined, [0]]
+bot_select_move(last_move)
+
+function black_Win_screen(){
+    var canvas = document.getElementById("canvas");
+    var winMsg = document.getElementById("win-message");
+    winMsg.style.visibility = "visible";
+    winMsg.style.opacity = "1";
+}
