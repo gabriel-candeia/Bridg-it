@@ -1,5 +1,5 @@
 # Bridg-it
-My implementation of the game Bridg-it in javascript, html and css.
+My implementation of the game Bridg-it in javascript, html and css. Link to play the game https://gabriel-candeia.github.io/Bridg-it/.
 
 ## Result 
 ![](previewimg.png)
